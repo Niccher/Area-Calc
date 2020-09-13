@@ -17,12 +17,21 @@
         android:id="@+id/myloc"
         android:layout_height="40dp"
         android:background="@drawable/ic_my_location"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:visibility="invisible"/>
 
     <ImageButton
         android:layout_width="40dp"
-        android:id="@+id/locinfo"
+        android:id="@+id/locinfo_clear"
         android:layout_height="40dp"
-        android:background="@drawable/ic_info" />
+        android:background="@drawable/ic_clear" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:id="@+id/locinfo_distance"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_info"
+        android:layout_below="@+id/locinfo_clear"
+        android:visibility="visible"/>
 
 </RelativeLayout>

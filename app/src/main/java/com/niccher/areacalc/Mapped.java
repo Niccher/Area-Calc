@@ -1,13 +1,12 @@
 package com.niccher.areacalc;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
-import android.view.WindowManager;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -29,6 +28,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Mapped extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
@@ -40,13 +43,15 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     final int reqcod = 145;
     GoogleMap gMaps;
 
-    float zoomdef = 15f;
-    int pickareq=14;
+    float zoomdef = 10f;
 
     FusedLocationProviderClient floc;
 
-    EditText ed;
-    ImageButton imgbtn,imginfo;
+    ImageButton imgbtn,imginfo_clear,imginfo_distance;
+
+    int count = 0;
+    LatLng tapped,tapped1;
+    boolean twos = false;
 
 
     @Override
@@ -55,7 +60,9 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
         setContentView(R.layout.activity_mapped);
 
         imgbtn=(ImageButton) findViewById(R.id.myloc);
-        imginfo=(ImageButton) findViewById(R.id.locinfo);
+        imginfo_clear=(ImageButton) findViewById(R.id.locinfo_clear);
+        imginfo_distance=(ImageButton) findViewById(R.id.locinfo_distance);
+
         CheckPermissions();
     }
 
@@ -79,7 +86,6 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
 
                         } else {
                             Toast.makeText(Mapped.this, "Location Not achieved", Toast.LENGTH_SHORT).show();
-                            Log.e("Target", "Location Missed ");
                         }
                     }
                 });
@@ -101,17 +107,11 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                     .title(locname);
             gMaps.addMarker(opt);
         }
-
-        hideKB();
     }
 
     private void Init() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(Mapped.this);
-    }
-
-    private void hideKB(){
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private void CheckPermissions() {
@@ -155,6 +155,8 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         gMaps = googleMap;
 
+        ArrayList<String> places = null;
+
         if (permAssign) {
             LocatMe();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -162,13 +164,90 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                 return;
             }
             gMaps.setMyLocationEnabled(true);
-            gMaps.getUiSettings().setMyLocationButtonEnabled(false);
+            gMaps.getUiSettings().setMyLocationButtonEnabled(true);
+
+            gMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+
+                    count = count + 1;
+
+                    if (count > 2){
+
+                    }else {
+
+                        if (count == 1){
+                            tapped = latLng;
+                        }
+                        if (count == 2){
+                            tapped1 = latLng;
+                        }
+
+                        markerOptions.position(latLng);
+                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
+                        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                        gMaps.addMarker(markerOptions);
+                    }
+                }
+            });
+
+            imginfo_clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gMaps.clear();
+                    Toast.makeText(Mapped.this, "Cleared all markers", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            imginfo_distance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    count = 0;
+                    String distance  = String.valueOf(CalculationByDistance(tapped, tapped1));;
+                    Toast.makeText(Mapped.this, "Distance is "+distance+" Kilometres", Toast.LENGTH_LONG).show();
+
+                    SystemClock.sleep(2000);
+                    gMaps.clear();
+
+                }
+            });
         }
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e("onConnectionFailed", "ConnectionResult connectionResult: " );
+    }
+
+    public double CalculationByDistance(LatLng StartPoint, LatLng EndPoint) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartPoint.latitude;
+        double lat2 = EndPoint.latitude;
+        double lon1 = StartPoint.longitude;
+        double lon2 = EndPoint.longitude;
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.e("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
     }
 
 }
