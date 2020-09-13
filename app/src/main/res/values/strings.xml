@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Area Calc</string>
+    <string name="app_name">Area Calculator</string>
+    <string name="key_api">AIzaSyC7E0jlM2klefbWU25oNk5UuJVjqlxL8Fg</string>
 </resources>

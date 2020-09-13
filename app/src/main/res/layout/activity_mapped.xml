@@ -12,26 +12,23 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <ImageButton
-        android:layout_width="40dp"
-        android:id="@+id/myloc"
-        android:layout_height="40dp"
-        android:background="@drawable/ic_my_location"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible"/>
+    <Switch
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textOff="Off"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"
+        android:text="Area"
+        android:textOn="On"
+        android:showText="true"
+        android:background="@drawable/part_rounded"/>
 
     <ImageButton
         android:layout_width="40dp"
         android:id="@+id/locinfo_clear"
         android:layout_height="40dp"
+        android:layout_below="@id/status"
         android:background="@drawable/ic_clear" />
-
-    <ImageButton
-        android:layout_width="40dp"
-        android:id="@+id/locinfo_distance"
-        android:layout_height="40dp"
-        android:background="@drawable/ic_info"
-        android:layout_below="@+id/locinfo_clear"
-        android:visibility="visible"/>
 
 </RelativeLayout>
