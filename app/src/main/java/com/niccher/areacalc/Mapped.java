@@ -31,6 +31,8 @@ import com.google.android.gms.maps.model.CustomCap;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
@@ -77,14 +79,18 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     Switch category;
 
     int count = 0, area_count = 0;
+    double length_ = 0;
     LatLng tapped,tapped1;
-    LatLng points = null;;
+    LatLng points = null;
+    Polygon polygon;
+    PolylineOptions polylineOptions;
 
     CalcArea calcArea;
     CalcDistance calcDistance;
 
     ArrayList<LatLng> locList = new ArrayList<LatLng>();
     ArrayList<LatLng> loc_area = new ArrayList<LatLng>();
+    ArrayList<LatLng> loc_storedistance = new ArrayList<LatLng>();
     Boolean state = false, area = false, length = true ;
 
     @Override
@@ -226,17 +232,16 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                         loc_area.add(latLng);
 
                         if (loc_area.size() > 1){
-                            googleMap.addPolyline((new PolylineOptions()).addAll(loc_area )
-                                    .clickable(true)
-                                    .width(5)
-                                    .color(Color.RED)
-                                    .geodesic(false));
+                            polygon = googleMap.addPolygon(new PolygonOptions()
+                                    .addAll(loc_area)
+                                    .strokeColor(Color.RED)
+                                    .fillColor(Color.argb(45,47,78,89)));
                         }
 
-                        if (loc_area.size() > 5){
-                            double areas = SphericalUtil.computeArea(loc_area);
-                            Toast.makeText(Mapped.this, "Area is "+String.valueOf(areas), Toast.LENGTH_LONG).show();
-                            Log.e("AreaComputed", "SphericalUtil areas as: "+areas );
+                        if (loc_area.size() > 2){
+                            double areas = SphericalUtil.computeArea(loc_area)/1000000;
+                            Toast.makeText(Mapped.this, "Area is "+String.format("%.0f", areas)+" Square Kilometers", Toast.LENGTH_LONG).show();
+                            Log.e("AreaComputed", "SphericalUtil areas as: "+String.format("%.0f", areas) );
 
                             List<Location> dope = new ArrayList<Location>();
                             for (int i = 0; i < loc_area.size(); i++) {
@@ -248,11 +253,10 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                             }
 
                             try {
-
                                 double areas2 = calcArea.calculateAreaPolygon(dope);
-                                Log.e("AreaComputed", "calculateAreaOfGPSPolygonOnEarthInSquareMeters areas as: "+areas2 );
+                                Log.e("AreaComputed", "calculateAreaPolygon areas as: "+areas2 );
                             }catch (Exception es){
-                                Log.e("AreaComputed", "calculateAreaOfGPSPolygonOnEarthInSquareMeters error "+es.getMessage() );
+                                Log.e("AreaComputed", "calculateAreaPolygon error "+es.getMessage() );
                             }
 
                         }
@@ -265,49 +269,37 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                     }
 
                     if (length){
+                        locList.add(latLng);
+                        int sizes = locList.size();
+
                         if (state){
                             locList.clear();
                             gMaps.clear();
+                            googleMap.clear();
                             state = false;
                         }
 
-                        if (count > 2){
-                            count = 0;
-                            state = true;
-                            googleMap.addPolyline((new PolylineOptions()).addAll(locList )
-                                    .width(5)
-                                    .color(Color.RED)
-                                    .geodesic(false));
-
-                            String distance  = String.valueOf(calcDistance.CalculateDistance(tapped, tapped1));;
+                        if (locList.size() > 1){
+                            int dds = locList.size();
+                            Log.e("Size as", "onMapClick: " + locList.size());
+                            Log.e("Varrrr 1", "onMapClick: " + locList.get(locList.size()-2));
+                            Log.e("Varrrr 2", "onMapClick: " + locList.get(locList.size()-1));
+                            tapped = locList.get(locList.size()-2);
+                            tapped1 = locList.get(locList.size()-1);
+                            length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
+                            String distance  = String.valueOf(length_);
                             Toast.makeText(Mapped.this, "Distance is "+distance+" Kilometres", Toast.LENGTH_LONG).show();
-                        }else {
-
-                            if (count == 1){
-                                tapped = latLng;
-                                locList.add(latLng);
-                            }
-                            if (count == 2){
-                                tapped1 = latLng;
-                                locList.add(latLng);
-
-                                count = 0;
-                                state = true;
-                                googleMap.addPolyline((new PolylineOptions()).addAll(locList )
-                                        .width(5)
-                                        .color(Color.RED)
-                                        .geodesic(false));
-
-                                String distance  = String.valueOf(calcDistance.CalculateDistance(tapped, tapped1));;
-                                Toast.makeText(Mapped.this, "Distance is "+distance+" Kilometres", Toast.LENGTH_LONG).show();
-                            }
-
-                            markerOptions.position(latLng);
-                            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
-                            gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                            gMaps.addMarker(markerOptions);
+                            Log.e("Distance is ", "Currently as : " + length_);
                         }
+
+                        markerOptions.position(latLng);
+                        googleMap.addPolyline((new PolylineOptions()).addAll(locList )
+                                .width(5)
+                                .color(Color.RED)
+                                .geodesic(false));
+
+                        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                        gMaps.addMarker(markerOptions);
                     }
 
                 }
@@ -317,6 +309,8 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                 @Override
                 public void onClick(View v) {
                     gMaps.clear();
+                    googleMap.clear();
+                    count = 0;
                     Toast.makeText(Mapped.this, "Cleared all markers", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -337,6 +331,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                     }
 
                     gMaps.clear();
+                    googleMap.clear();
                 }
             });
         }
