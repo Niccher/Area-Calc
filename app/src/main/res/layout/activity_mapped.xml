@@ -31,4 +31,15 @@
         android:layout_below="@id/status"
         android:background="@drawable/ic_clear" />
 
+    <TextView
+        android:id="@+id/loc_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/part_rounded"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

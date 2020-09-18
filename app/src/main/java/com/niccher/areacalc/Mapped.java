@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,6 +78,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     FusedLocationProviderClient floc;
 
     ImageButton imginfo_clear;
+    TextView det_info;
     Switch category;
 
     int count = 0, area_count = 0;
@@ -85,12 +88,14 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     Polygon polygon;
     PolylineOptions polylineOptions;
 
+    double prev,curent;
+
     CalcArea calcArea;
     CalcDistance calcDistance;
 
     ArrayList<LatLng> locList = new ArrayList<LatLng>();
     ArrayList<LatLng> loc_area = new ArrayList<LatLng>();
-    ArrayList<LatLng> loc_storedistance = new ArrayList<LatLng>();
+    ArrayList<LatLng> loc_direction = new ArrayList<LatLng>();
     Boolean state = false, area = false, length = true ;
 
     @Override
@@ -100,6 +105,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
 
         category=(Switch) findViewById(R.id.status);
         imginfo_clear=(ImageButton) findViewById(R.id.locinfo_clear);
+        det_info=(TextView) findViewById(R.id.loc_details);
 
         calcArea = new CalcArea();
         calcDistance = new CalcDistance();
@@ -150,7 +156,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
     }
 
     private void movCamera(LatLng latlong, float zoom,String locname) {
-        Toast.makeText(Mapped.this, "Moving Camera to lat" + latlong.latitude + "\nlong" + latlong.longitude, Toast.LENGTH_LONG).show();
+        Toast.makeText(Mapped.this, "Locating lat " + latlong.latitude + "\nlong " + latlong.longitude, Toast.LENGTH_LONG).show();
         Log.e("Target", "Moving Camera to lat " + latlong.latitude + "\tlong " + latlong.longitude);
         gMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, zoom));
 
@@ -223,6 +229,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                 public void onMapClick(LatLng latLng) {
                     MarkerOptions markerOptions = new MarkerOptions();
                     points = latLng;
+                    det_info.setVisibility(View.VISIBLE);
 
                     count = count + 1;
                     area_count = area_count + 1;
@@ -232,18 +239,41 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                         loc_area.add(latLng);
 
                         if (loc_area.size() > 1){
+
                             polygon = googleMap.addPolygon(new PolygonOptions()
                                     .addAll(loc_area)
-                                    .strokeColor(Color.RED)
-                                    .fillColor(Color.argb(45,47,78,89)));
+                                    .strokeWidth(0)
+                                    .clickable(true)
+                                    .fillColor(Color.GRAY));
                         }
 
                         if (loc_area.size() > 2){
+                            ArrayList<LatLng> pev = new ArrayList<>();
+                            for (int i = 0; i < loc_area.size()-1; i++) {
+                                pev.add(loc_area.get(i));
+                            }
+                            prev = SphericalUtil.computeArea(pev)/1000000;
                             double areas = SphericalUtil.computeArea(loc_area)/1000000;
-                            Toast.makeText(Mapped.this, "Area is "+String.format("%.0f", areas)+" Square Kilometers", Toast.LENGTH_LONG).show();
-                            Log.e("AreaComputed", "SphericalUtil areas as: "+String.format("%.0f", areas) );
 
-                            List<Location> dope = new ArrayList<Location>();
+                            if (prev < areas){
+                                //Toast.makeText(Mapped.this, "Area is "+String.format("%.2f", areas)+" Square Kilometers", Toast.LENGTH_LONG).show();
+                                Log.e("AreaComputed", "SphericalUtil areas as: "+String.format("%.0f", areas) );
+                                Log.e("AreaComputed", "SphericalUtil areas ++: "+String.format("%.0f", prev) );
+
+                                det_info.setText("Areas Approximated as: \n"+String.format("%.2f", areas)+" Square Kilometres");
+
+                            }else {
+                                det_info.setText("");
+                                det_info.setVisibility(View.INVISIBLE);
+                                Toast.makeText(Mapped.this, "Markers should all be moving to one direction,\nEither clockwise or anticlockwise", Toast.LENGTH_LONG).show();
+                                loc_area.clear();
+                                locList.clear();
+                                gMaps.clear();
+                                googleMap.clear();
+                                loc_area.add(latLng);
+                            }
+
+                            /*List<Location> dope = new ArrayList<Location>();
                             for (int i = 0; i < loc_area.size(); i++) {
                                 LatLng here = loc_area.get(i);
                                 Location location = new Location("Test");
@@ -252,12 +282,12 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                                 dope.add(location);
                             }
 
-                            try {
+                            /*try {
                                 double areas2 = calcArea.calculateAreaPolygon(dope);
                                 Log.e("AreaComputed", "calculateAreaPolygon areas as: "+areas2 );
                             }catch (Exception es){
                                 Log.e("AreaComputed", "calculateAreaPolygon error "+es.getMessage() );
-                            }
+                            }*/
 
                         }
 
@@ -280,15 +310,14 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                         }
 
                         if (locList.size() > 1){
-                            int dds = locList.size();
-                            Log.e("Size as", "onMapClick: " + locList.size());
+                            /*Log.e("Size as", "onMapClick: " + locList.size());
                             Log.e("Varrrr 1", "onMapClick: " + locList.get(locList.size()-2));
-                            Log.e("Varrrr 2", "onMapClick: " + locList.get(locList.size()-1));
+                            Log.e("Varrrr 2", "onMapClick: " + locList.get(locList.size()-1));*/
                             tapped = locList.get(locList.size()-2);
                             tapped1 = locList.get(locList.size()-1);
                             length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
-                            String distance  = String.valueOf(length_);
-                            Toast.makeText(Mapped.this, "Distance is "+distance+" Kilometres", Toast.LENGTH_LONG).show();
+                            String distance  = String.format("%.2f", length_);
+                            det_info.setText("Distance Approximated as: \n"+distance+" Kilometres");
                             Log.e("Distance is ", "Currently as : " + length_);
                         }
 
@@ -308,9 +337,13 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
             imginfo_clear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    loc_area.clear();
+                    locList.clear();
                     gMaps.clear();
                     googleMap.clear();
                     count = 0;
+                    det_info.setText("");
+                    det_info.setVisibility(View.INVISIBLE);
                     Toast.makeText(Mapped.this, "Cleared all markers", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -319,7 +352,7 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
                 @Override
                 public void onClick(View v) {
                     if (category.isChecked()){
-                        loc_area.add(points);
+                        loc_area.clear();
                         locList.clear();
                         area = true;
                         length = false;
@@ -332,9 +365,25 @@ public class Mapped extends AppCompatActivity implements OnMapReadyCallback, Goo
 
                     gMaps.clear();
                     googleMap.clear();
+
+                    det_info.setText("");
+                    det_info.setVisibility(View.INVISIBLE);
+                    //det_info.setText("Areas Approximated as: ");
                 }
             });
         }
+    }
+
+    public boolean isClockwise(ArrayList<LatLng> region) {
+        final int size = region.size();
+        LatLng a = region.get(size - 1);
+        double aux = 0;
+        for (int i = 0; i < size; i++) {
+            LatLng b = region.get(i);
+            aux += (b.latitude - a.latitude) * (b.longitude + a.longitude);
+            a = b;
+        }
+        return aux <= 0;
     }
 
     @Override
