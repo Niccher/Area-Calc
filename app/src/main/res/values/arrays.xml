@@ -9,7 +9,6 @@
         <item>About App</item>
         <item>Setting</item>
 
-        <item />
         <item>Website</item>
         <item>Log out</item>
         <item>Exit</item>
@@ -23,7 +22,6 @@
         <item>@drawable/ic_info</item>
         <item>@drawable/ic_settings</item>
 
-        <item>0</item>
         <item>@drawable/ic_website</item>
         <item>@drawable/ic_logout</item>
         <item>@drawable/ic_exit</item>

@@ -47,13 +47,20 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.SphericalUtil;
 import com.niccher.areacalc.Mapped;
 import com.niccher.areacalc.R;
 import com.niccher.areacalc.Utils.CalcArea;
 import com.niccher.areacalc.Utils.CalcDistance;
+import com.niccher.areacalc.mod.Mod_Area;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
@@ -98,6 +105,10 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
     CalcArea calcArea;
     CalcDistance calcDistance;
 
+    FirebaseAuth mAuth;
+    FirebaseUser userf;
+    DatabaseReference dref;
+
     public Frag_Home() {
         // Required empty public constructor
     }
@@ -110,6 +121,11 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
         View fraghome= inflater.inflate(R.layout.frag_home, container, false);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Home");
+
+        mAuth = FirebaseAuth.getInstance();
+        userf=mAuth.getCurrentUser();
+        //fdbas= FirebaseDatabase.getInstance();
+        dref = FirebaseDatabase.getInstance().getReference("Area_Calc_Saved");
 
         CheckPermissions();
 
@@ -483,13 +499,32 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
     }
 
     private void SaveList(ArrayList<LatLng> selected, String type) {
-        String ff= "";
+        String llong= "";
         for (int i = 0; i < (selected.size()); i++) {
-            Log.e("SaveList", "SaveList: "+selected.get(i) );
-            Log.e("SaveList", "Type: "+type);
-            ff+=selected.get(i);
+            Log.e("SaveList", i+" SaveList: "+selected.get(i) );
+            Log.e("SaveList", i+" Type: "+type);
+            llong+=selected.get(i);
         }
-        Log.e("SaveList", "SaveList String : "+ff);
+        Log.e("SaveList", "SaveList String : "+llong);
+
+        Calendar cal= Calendar.getInstance();
+        SimpleDateFormat ctime=new SimpleDateFormat("HH:mm");
+        SimpleDateFormat cdate=new SimpleDateFormat("dd-MMMM-yyyy");
+
+        final String ctim=ctime.format(cal.getTime());
+        final String cdat=cdate.format(cal.getTime());
+
+        String uploadId = "";
+
+        try {
+            uploadId= dref.push().getKey();
+            Mod_Area upload = new Mod_Area(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()));
+            dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
+            Toast.makeText(getActivity(), "Selection saved", Toast.LENGTH_SHORT).show();
+        }catch (Exception s){
+            Toast.makeText(getActivity(), "Unable to save your selection", Toast.LENGTH_SHORT).show();
+            Log.e("SaveList", "SaveList Error : "+s.getMessage());
+        }
     }
 
     @Override

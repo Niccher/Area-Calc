@@ -1,4 +1,4 @@
-package com.niccher.areacalc.frags;
+package com.niccher.areacalc.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

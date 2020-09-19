@@ -35,6 +35,8 @@ import com.niccher.areacalc.frags.Frag_About;
 import com.niccher.areacalc.frags.Frag_Home;
 import com.niccher.areacalc.frags.Frag_Profile;
 import com.niccher.areacalc.frags.Frag_Setting;
+import com.niccher.areacalc.frags.Frag_View_Area;
+import com.niccher.areacalc.frags.Frag_View_Length;
 import com.niccher.areacalc.menu.DrawerAdapter;
 import com.niccher.areacalc.menu.DrawerItem;
 import com.niccher.areacalc.menu.SimpleItem;
@@ -108,7 +110,7 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
                 createItemFor(POS_Profile),
                 createItemFor(POS_About_App),
                 createItemFor(POS_Setting),
-                new SpaceItem(48),
+                new SpaceItem(32),
                 createItemFor(POS_WEBSITE),
                 createItemFor(POS_LOG),
                 createItemFor(POS_EXIT)));
@@ -215,25 +217,26 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
             frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
         if (position == POS_View_Area) {
-            Toast.makeText(this, "View under active development", Toast.LENGTH_SHORT).show();;
+            frags=new Frag_View_Area();
+            FragmentManager frman1=getSupportFragmentManager();
+            frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
         if (position == POS_View_Length) {
-            Toast.makeText(this, "View 2 under active development", Toast.LENGTH_SHORT).show();;
+            frags=new Frag_View_Length();
+            FragmentManager frman1=getSupportFragmentManager();
+            frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
         if (position == POS_Profile) {
-            Toast.makeText(this, "Profile under active development", Toast.LENGTH_SHORT).show();;
             frags=new Frag_Profile();
             FragmentManager frman1=getSupportFragmentManager();
             frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
         if (position == POS_About_App) {
-            Toast.makeText(this, "About under active development", Toast.LENGTH_SHORT).show();;
             frags=new Frag_About();
             FragmentManager frman1=getSupportFragmentManager();
             frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
         if (position == POS_Setting) {
-            Toast.makeText(this, "Setting under active development", Toast.LENGTH_SHORT).show();;
             frags=new Frag_Setting();
             FragmentManager frman1=getSupportFragmentManager();
             frman1.beginTransaction().replace(R.id.container,frags).commit();
@@ -254,11 +257,13 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
             GetState();
         }
         if (position == POS_EXIT) {
+            Toast.makeText(this, "Exiting", Toast.LENGTH_LONG).show();;
             Intent intt=new Intent(Intent.ACTION_MAIN);
             intt.addCategory(Intent.CATEGORY_HOME);
             intt.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intt);
 
+            finish();
             System.gc();
             System.exit(0);
         }

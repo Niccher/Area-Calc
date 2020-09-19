@@ -70,6 +70,7 @@ public class UserSet extends AppCompatActivity {
         fdbas= FirebaseDatabase.getInstance();
 
         stoRef = FirebaseStorage.getInstance().getReference("Area_Calc");
+
         stoThumb = FirebaseStorage.getInstance().getReference("Area_Calc_Thumb");
 
         dref = FirebaseDatabase.getInstance().getReference("Area_Calc");
