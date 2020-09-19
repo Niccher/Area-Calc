@@ -23,7 +23,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC7E0jlM2klefbWU25oNk5UuJVjqlxL8Fg"/>
 
-        <activity android:name=".Mapped">
+        <activity android:name=".Casa"
+            android:theme="@style/AppTheme2">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,8 +33,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MapsActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".Mapped" android:theme="@style/AppTheme2"/>
 
     </application>
 

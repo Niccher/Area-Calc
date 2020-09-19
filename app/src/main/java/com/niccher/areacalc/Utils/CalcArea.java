@@ -1,4 +1,4 @@
-package com.niccher.areacalc;
+package com.niccher.areacalc.Utils;
 
 
 import android.location.Location;
