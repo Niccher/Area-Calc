@@ -31,19 +31,31 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-
-    implementation 'com.google.maps.android:android-maps-utils:0.4+'
-
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     implementation 'com.yarolegovich:sliding-root-nav:1.1.0'
 
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation "com.github.khirr:Android-Privacy-Policy:1.0.1"
 
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+    implementation 'id.zelory:compressor:2.1.0'
+
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.4+'
+    implementation 'com.google.android.material:material:1.2.1'
+
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-database:19.2.1'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation 'com.firebase:firebase-client-android:2.3.1'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
 }
+
+apply plugin: 'com.google.gms.google-services'
