@@ -24,7 +24,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC7E0jlM2klefbWU25oNk5UuJVjqlxL8Fg"/>
 
-        <activity android:name=".UserLogin">
+        <activity android:name=".auth.UserLogin"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,13 +33,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Mapped" android:theme="@style/AppTheme2"/>
+        <activity android:name=".activities.Mapped" android:theme="@style/AppTheme2"/>
         <activity android:name=".Casa" android:theme="@style/AppTheme2"/>
 
-        <activity android:name=".ActivitySlider" android:theme="@style/AppTheme2"/>
+        <activity android:name=".activities.ActivitySlider" android:theme="@style/AppTheme2"/>
 
-        <activity android:name=".UserNew" android:theme="@style/AppTheme2" />
-        <activity android:name=".UserSet" android:theme="@style/AppTheme2" />
+        <activity android:name=".auth.UserNew" android:theme="@style/AppTheme2" />
+        <activity android:name=".auth.UserSet" android:theme="@style/AppTheme2" />
 
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>

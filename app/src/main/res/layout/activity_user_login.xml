@@ -3,110 +3,115 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".UserLogin">
+    tools:context=".auth.UserLogin">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/timg"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="1dp"
-            android:layout_above="@+id/linearLayout"
-            android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/linearLayout">
+            android:background="@drawable/timg">
 
-            <EditText
-                android:id="@+id/user_log_eml"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_margin="10dp"
+                android:id="@+id/imgwelcome"
+                android:src="@drawable/ic_location"
+                android:layout_centerHorizontal="true" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="35dp"
-                android:layout_marginTop="20dp"
-                android:background="#0000"
-                android:drawableRight="@drawable/ic_email"
-                android:hint="Email"
-                android:inputType="textEmailAddress"
-                android:padding="16dp"
-                android:textColor="#ADCCE2"
-                android:textColorHint="#ADCCE2"
-                android:textSize="16dp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                android:layout_height="1dp"
-                android:background="#ADCCE2" />
+                android:orientation="vertical"
+                android:id="@+id/linearLayout">
 
-            <EditText
-                android:id="@+id/user_log_pwd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="35dp"
-                android:background="#0000"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:maxLength="12"
-                android:padding="16dp"
-                android:textColor="#ADCCE2"
-                android:textColorHint="#ADCCE2"
-                android:textSize="16dp" />
+                <EditText
+                    android:id="@+id/user_log_eml"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="35dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#0000"
+                    android:drawableRight="@drawable/ic_email"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:padding="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_height="1dp"
+                    android:background="#ADCCE2" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                android:layout_height="1dp"
-                android:layout_marginBottom="10dp"
-                android:background="#ADCCE2"/>
+                <EditText
+                    android:id="@+id/user_log_pwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="35dp"
+                    android:background="#0000"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:maxLength="12"
+                    android:padding="16dp"
+                    android:textColor="#ADCCE2"
+                    android:textColorHint="#ADCCE2"
+                    android:textSize="16dp" />
 
-            <TextView
-                android:id="@+id/user_log_procid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#54abee"
-                android:text="Sign In"
-                android:textSize="16dp"
-                android:textColor="#fff"
-                android:gravity="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                android:padding="16dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="32dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="#ADCCE2"/>
 
-            <TextView
-                android:id="@+id/user_log_new"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#54abee"
-                android:text="Create Account"
-                android:textSize="16dp"
-                android:textColor="#fff"
-                android:gravity="center"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                android:padding="16dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="28dp"
-                android:layout_marginTop="10dp"/>
+                <TextView
+                    android:id="@+id/user_log_procid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#54abee"
+                    android:text="Sign In"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:gravity="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:padding="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="32dp"/>
+
+                <TextView
+                    android:id="@+id/user_log_new"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#54abee"
+                    android:text="Create Account"
+                    android:textSize="16dp"
+                    android:textColor="#fff"
+                    android:gravity="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:padding="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="28dp"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
+
+    </ScrollView>
+
 
 </RelativeLayout>

@@ -3,12 +3,8 @@ package com.niccher.areacalc.frags;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,15 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -38,7 +31,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -52,7 +44,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.SphericalUtil;
-import com.niccher.areacalc.Mapped;
 import com.niccher.areacalc.R;
 import com.niccher.areacalc.Utils.CalcArea;
 import com.niccher.areacalc.Utils.CalcDistance;
@@ -186,7 +177,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
         linL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Length", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please mark two or more points on the map so calculate the distance between them", Toast.LENGTH_LONG).show();
 
                 linA.setVisibility(View.INVISIBLE);
                 linL.setVisibility(View.INVISIBLE);
@@ -212,7 +203,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
         linA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Area", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please Mark several points on the map to computer the area by pressing the screen", Toast.LENGTH_LONG).show();
 
                 linA.setVisibility(View.INVISIBLE);
                 linL.setVisibility(View.INVISIBLE);
@@ -256,6 +247,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                 area = false;
                 length = false;
                 gMaps.clear();
+                mMapView.onStart();
                 count = 0;
                 Toast.makeText(getActivity(), "Cleared all markers", Toast.LENGTH_SHORT).show();
             }
@@ -307,7 +299,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                             Location currloc = (Location) task.getResult();
 
                             try {
-                                movCamera(new LatLng(currloc.getLatitude(), currloc.getLongitude()), zoomdef,"Base Location");
+                                movCamera(new LatLng(currloc.getLatitude(), currloc.getLongitude()), zoomdef);
                             }catch (Exception es){
                                 Toast.makeText(getActivity(), "Error\n"+es, Toast.LENGTH_SHORT).show();
                             }
@@ -324,15 +316,8 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void movCamera(LatLng latlong, float zoom,String locname) {
-        Toast.makeText(getActivity(), "Locating lat " + latlong.latitude + "\nlong " + latlong.longitude, Toast.LENGTH_LONG).show();
-        Log.e("Target", "Moving Camera to lat " + latlong.latitude + "\tlong " + latlong.longitude);
+    private void movCamera(LatLng latlong, float zoom) {
         gMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, zoom));
-
-        /*MarkerOptions opt=new MarkerOptions()
-                .position(latlong)
-                .title(locname);
-        gMaps.addMarker(opt);*/
     }
 
     private void CheckPermissions() {
@@ -344,7 +329,6 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
             if (ContextCompat.checkSelfPermission(getContext(),
                     locCOS) == PackageManager.PERMISSION_GRANTED) {
                 permAssign = true;
-                //Init();
             } else {
                 ActivityCompat.requestPermissions(getActivity(), pe, reqcod);
             }
@@ -355,114 +339,118 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.getUiSettings().setCompassEnabled(true);
-        googleMap.getUiSettings().setZoomGesturesEnabled(true);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        googleMap.getUiSettings().setTiltGesturesEnabled(true);
-        googleMap.getUiSettings().setRotateGesturesEnabled(true);
-        /*googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);*/
+        if (permAssign){
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            googleMap.getUiSettings().setCompassEnabled(true);
+            googleMap.getUiSettings().setZoomGesturesEnabled(true);
+            googleMap.getUiSettings().setScrollGesturesEnabled(true);
+            googleMap.getUiSettings().setTiltGesturesEnabled(true);
+            googleMap.getUiSettings().setRotateGesturesEnabled(true);
 
-        gMaps = googleMap;
-        gMaps.setMyLocationEnabled(true);
-        gMaps.getUiSettings().setMyLocationButtonEnabled(true);
-        LocateMe();
+            gMaps = googleMap;
+            gMaps.setMyLocationEnabled(true);
+            gMaps.getUiSettings().setMyLocationButtonEnabled(true);
+            LocateMe();
 
-        gMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                MarkerOptions markerOptions = new MarkerOptions();
+            gMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    MarkerOptions markerOptions = new MarkerOptions();
 
-                count = count + 1;
-                area_count = area_count + 1;
+                    count = count + 1;
+                    area_count = area_count + 1;
 
-                if (clean){
-                    loc_area.clear();
-                    locList.clear();
-                    gMaps.clear();
-                    clean = false;
-                }
+                    if (clean){
+                        loc_area.clear();
+                        locList.clear();
+                        gMaps.clear();
+                        clean = false;
+                    }else if (area){
+                        loc_area.add(latLng);
 
-                if (area){
-                    loc_area.add(latLng);
+                        if (loc_area.size() > 1){
+                            polygon = gMaps.addPolygon(new PolygonOptions()
+                                    .addAll(loc_area)
+                                    .strokeWidth(0)
+                                    .clickable(true)
+                                    .fillColor(Color.argb(70,140,70,200)));
 
-                    if (loc_area.size() > 1){
-                        polygon = googleMap.addPolygon(new PolygonOptions()
-                                .addAll(loc_area)
-                                .strokeWidth(0)
-                                .clickable(true)
-                                .fillColor(Color.GRAY));
-
-                        tapped = loc_area.get(loc_area.size()-2);
-                        tapped1 = loc_area.get(loc_area.size()-1);
-                        length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
-                        String distance  = String.format("%.2f", length_);
-                        txt_peri.setText("Perimeter : "+distance+" Km");
-                    }
-
-                    if (loc_area.size() > 2){
-                        ArrayList<LatLng> pev = new ArrayList<>();
-                        for (int i = 0; i < loc_area.size()-1; i++) {
-                            pev.add(loc_area.get(i));
+                            tapped = loc_area.get(loc_area.size()-2);
+                            tapped1 = loc_area.get(loc_area.size()-1);
+                            length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
+                            String distance  = String.format("%.2f", length_);
+                            txt_peri.setText("Perimeter : "+distance+" Km");
                         }
-                        prev = SphericalUtil.computeArea(pev)/1000000;
-                        double areas = SphericalUtil.computeArea(loc_area)/1000000;
 
-                        if (prev < areas){
-                            Log.e("AreaComputed", "SphericalUtil areas as: "+String.format("%.0f", areas) );
-                            Log.e("AreaComputed", "SphericalUtil areas ++: "+String.format("%.0f", prev) );
+                        if (loc_area.size() > 2){
+                            ArrayList<LatLng> pev = new ArrayList<>();
+                            ArrayList<LatLng> hole = new ArrayList<>();
+                            for (int i = 0; i < loc_area.size()-1; i++) {
+                                pev.add(loc_area.get(i));
+                            }
+                            prev = SphericalUtil.computeArea(pev)/1000000;
+                            double areas = SphericalUtil.computeArea(loc_area)/1000000;
 
-                            txt_area.setText("Areas as: \n"+String.format("%.2f", areas)+" Sq, Km");
+                            if (prev < areas){
+                                Log.e("AreaComputed", "SphericalUtil areas as: "+String.format("%.0f", areas) );
+                                Log.e("AreaComputed", "SphericalUtil areas ++: "+String.format("%.0f", prev) );
 
-                        }else {
-                            Toast.makeText(getActivity(), "Markers should all be moving to one direction,\nEither clockwise or anticlockwise", Toast.LENGTH_LONG).show();
-                            loc_area.clear();
+                                txt_area.setText("Areas as: \n"+String.format("%.2f", areas)+" Sq, Km");
+
+                            }else {
+                                //Toast.makeText(getActivity(), "Markers should all be moving to one direction,\nEither clockwise or anticlockwise", Toast.LENGTH_LONG).show();
+                                gMaps.clear();
+                                hole.add(latLng);
+                                polygon = gMaps.addPolygon(new PolygonOptions()
+                                        .addAll(loc_area)
+                                        .addHole(hole)
+                                        .fillColor(Color.LTGRAY));
+                            }
+
+                        }
+
+                        markerOptions.position(latLng);
+                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+
+                        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                        gMaps.addMarker(markerOptions);
+                    } else if (length){
+                        locList.add(latLng);
+                        int sizes = locList.size();
+
+                        if (state){
                             locList.clear();
                             gMaps.clear();
                             googleMap.clear();
-                            loc_area.add(latLng);
+                            state = false;
                         }
 
+                        if (locList.size() > 1){
+                            tapped = locList.get(locList.size()-2);
+                            tapped1 = locList.get(locList.size()-1);
+                            length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
+                            String distance  = String.format("%.2f", length_);
+                            txt_peri.setText("Distance Approximation: "+distance+" Km");
+                            Log.e("Distance is ", "Currently as : " + length_);
+                        }
+
+                        markerOptions.position(latLng);
+                        googleMap.addPolyline((new PolylineOptions()).addAll(locList )
+                                .width(5)
+                                .color(Color.RED)
+                                .geodesic(false));
+
+                        gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                        gMaps.addMarker(markerOptions);
+                    }else {
+                        Toast.makeText(getActivity(), "Please select either Area or Distance so as to proceed", Toast.LENGTH_LONG).show();
                     }
-
-                    markerOptions.position(latLng);
-                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-
-                    gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                    gMaps.addMarker(markerOptions);
                 }
-
-                if (length){
-                    locList.add(latLng);
-                    int sizes = locList.size();
-
-                    if (state){
-                        locList.clear();
-                        gMaps.clear();
-                        googleMap.clear();
-                        state = false;
-                    }
-
-                    if (locList.size() > 1){
-                        tapped = locList.get(locList.size()-2);
-                        tapped1 = locList.get(locList.size()-1);
-                        length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
-                        String distance  = String.format("%.2f", length_);
-                        txt_peri.setText("Distance Approximation: "+distance+" Km");
-                        Log.e("Distance is ", "Currently as : " + length_);
-                    }
-
-                    markerOptions.position(latLng);
-                    googleMap.addPolyline((new PolylineOptions()).addAll(locList )
-                            .width(5)
-                            .color(Color.RED)
-                            .geodesic(false));
-
-                    gMaps.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                    gMaps.addMarker(markerOptions);
-                }
-            }
-        });
+            });
+        }else {
+            Toast.makeText(getActivity(), "You must allow the application to access location for it to run smoothly", Toast.LENGTH_SHORT).show();
+            CheckPermissions();
+        }
     }
 
 

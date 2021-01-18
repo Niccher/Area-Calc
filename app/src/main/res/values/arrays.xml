@@ -3,13 +3,11 @@
 
     <string-array name="ld_activityScreenTitles">
         <item>Home</item>
-        <item>Saved Areas</item>
-        <item>Saved Perimeters</item>
+        <item>My Saved Areas</item>
+        <item>My Saved Perimeters</item>
         <item>Profile</item>
         <item>About App</item>
-        <item>Setting</item>
 
-        <item>Website</item>
         <item>Log out</item>
         <item>Exit</item>
     </string-array>
@@ -20,75 +18,12 @@
         <item>@drawable/ic_view</item>
         <item>@drawable/ic_profile</item>
         <item>@drawable/ic_info</item>
-        <item>@drawable/ic_settings</item>
 
-        <item>@drawable/ic_website</item>
         <item>@drawable/ic_logout</item>
         <item>@drawable/ic_exit</item>
     </array>
 
     <string name="text_expanded">Expanded</string>
     <string name="text_collapsed">Collapsed</string>
-
-    <string name="Vbody_prompt">Cookie Type</string>
-
-    <string-array name="Vbodyty_arrays">
-        <item>Cookie Type</item>
-        <item>Biscuits</item>
-        <item>Birthday Cakes</item>
-        <item>Cakes</item>
-        <item>Donuts</item>
-    </string-array>
-
-    <string-array name="Vregion_arrays">
-        <item>Location</item>
-        <item>Baringo</item>
-        <item>Bomet</item>
-        <item>Bungoma</item>
-        <item>Busia</item>
-        <item>Elgeyo Marakwet </item>
-        <item>Embu</item>
-        <item>Garissa</item>
-        <item>Homabay</item>
-        <item>Isiolo</item>
-        <item>Kajiado</item>
-        <item>Kakamega</item>
-        <item>Kericho</item>
-        <item>Kiambu</item>
-        <item>Kilifi</item>
-        <item>Kirinyaga</item>
-        <item>Kisii</item>
-        <item>Kisumu</item>
-        <item>Kitui</item>
-        <item>Kwale</item>
-        <item>Laikipia</item>
-        <item>Lamu</item>
-        <item>Machakos</item>
-        <item>Makueni</item>
-        <item>Mandera</item>
-        <item>Marsabit</item>
-        <item>Meru</item>
-        <item>Migori</item>
-        <item>Mombasa</item>
-        <item>Murang\'a</item>
-        <item>Nairobi</item>
-        <item>Nakuru</item>
-        <item>Nandi</item>
-        <item>Narok</item>
-        <item>Nyamira</item>
-        <item>Nyandarua</item>
-        <item>Nyeri</item>
-        <item>Samburu</item>
-        <item>Siaya</item>
-        <item>Taita Taveta</item>
-        <item>Tana River</item>
-        <item>Trans Nzoia</item>
-        <item>Tharaka Nithi </item>
-        <item>Turkana </item>
-        <item>Uasin Gishu</item>
-        <item>Vihiga</item>
-        <item>Wajir</item>
-        <item>West Pokot</item>
-    </string-array>
 
 </resources>

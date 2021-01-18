@@ -3,13 +3,10 @@ package com.niccher.areacalc;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +28,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.niccher.areacalc.activities.ActivitySlider;
+import com.niccher.areacalc.auth.UserLogin;
 import com.niccher.areacalc.frags.Frag_About;
 import com.niccher.areacalc.frags.Frag_Home;
 import com.niccher.areacalc.frags.Frag_Profile;
-import com.niccher.areacalc.frags.Frag_Setting;
 import com.niccher.areacalc.frags.Frag_View_Area;
 import com.niccher.areacalc.frags.Frag_View_Length;
 import com.niccher.areacalc.menu.DrawerAdapter;
@@ -44,6 +42,8 @@ import com.niccher.areacalc.menu.SpaceItem;
 import com.squareup.picasso.Picasso;
 import com.yarolegovich.slidingrootnav.SlidingRootNav;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
+
+import net.khirr.android.privacypolicy.PrivacyPolicyDialog;
 
 import java.util.Arrays;
 
@@ -61,6 +61,8 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
     CircleImageView usr_prof;
     TextView usr_handle,usr_email;
 
+    String term_accpt,term_liab,term_disclaimer,term_declare;
+
     private SlidingRootNav slidingRootNav;
 
 
@@ -69,11 +71,11 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
     private static final int POS_View_Length = 2;
     private static final int POS_Profile = 3;
     private static final int POS_About_App = 4;
-    private static final int POS_Setting = 5;
+    //private static final int POS_Setting = 5;
 
-    private static final int POS_WEBSITE = 6;
-    private static final int POS_LOG = 7;
-    private static final int POS_EXIT = 8;
+    //private static final int POS_WEBSITE = 6;
+    private static final int POS_LOG = 5;
+    private static final int POS_EXIT = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +111,7 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
                 createItemFor(POS_View_Length),
                 createItemFor(POS_Profile),
                 createItemFor(POS_About_App),
-                createItemFor(POS_Setting),
-                new SpaceItem(32),
-                createItemFor(POS_WEBSITE),
+                //new SpaceItem(32),
                 createItemFor(POS_LOG),
                 createItemFor(POS_EXIT)));
         adapter.setListener(Casa.this);
@@ -127,6 +127,43 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
     @Override
     protected void onStart() {
         super.onStart();
+
+        term_accpt = "By accessing this service we assume you accept these terms and conditions. Do not continue to use this app if you do not agree to take all of the terms and conditions stated here";
+        term_liab = "We shall not be hold responsible for any content that appears on platform. No content should appear on this platform, if it may be interpreted as rebellious, obscene or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third party rights.\n" +
+                "    We do not ensure that the information on this platform is correct, we do not warrant its completeness or accuracy; nor do we promise to ensure that the platform remains available or that the material on the posted is kept up to date.";
+        term_disclaimer = "To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our platform and the use of this website. Nothing in this disclaimer will:\n" +
+                "\n" +
+                "    limit or exclude our or your liability for personality demeanor;\n" +
+                "    limit or exclude our or your liability for fraud or fraudulent misrepresentation;\n" +
+                "    limit any of our or your liabilities in any way that is not permitted under applicable law; or\n" +
+                "    exclude any of our or your liabilities that may not be excluded under applicable law.";
+        term_declare = "As long as the information and services on the platform are provided free of charge, we will not be liable for any loss or damage of any nature";
+
+        PrivacyPolicyDialog dialog = new PrivacyPolicyDialog(this,
+                "link1",
+                "link2");
+
+        dialog.addPoliceLine(term_accpt);
+        dialog.addPoliceLine(term_liab);
+        dialog.addPoliceLine(term_disclaimer);
+        dialog.addPoliceLine(term_declare);
+
+        dialog.setTitleTextColor(Color.parseColor("#222222"));
+        dialog.setAcceptButtonColor(ContextCompat.getColor(this, R.color.colorAccent));
+
+        dialog.setOnClickListener(new PrivacyPolicyDialog.OnClickListener() {
+            @Override
+            public void onAccept(boolean isFirstTime) {
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("MainActivity", "Policies not accepted");
+                finish();
+            }
+        });
+
+        dialog.show();
         GetState();
         LoadUsa();
     }
@@ -143,7 +180,7 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
         if (fuse!=null){
             //
         }else {
-            startActivity(new Intent(Casa.this,UserLogin.class));
+            startActivity(new Intent(Casa.this, UserLogin.class));
             finish();
         }
     }
@@ -154,7 +191,7 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
         Log.e("LoadData", "intro_slide is set as " + intro);
 
         if (intro =="has_not"){
-            Intent gog=new Intent(this,ActivitySlider.class);
+            Intent gog=new Intent(this, ActivitySlider.class);
             gog.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(gog);
             finish();
@@ -236,23 +273,8 @@ public class Casa extends AppCompatActivity implements DrawerAdapter.OnItemSelec
             FragmentManager frman1=getSupportFragmentManager();
             frman1.beginTransaction().replace(R.id.container,frags).commit();
         }
-        if (position == POS_Setting) {
-            frags=new Frag_Setting();
-            FragmentManager frman1=getSupportFragmentManager();
-            frman1.beginTransaction().replace(R.id.container,frags).commit();
-        }
-
-        if (position == POS_WEBSITE) {
-            Toast.makeText(this, "Target Website Not Set, Redirecting to Google", Toast.LENGTH_LONG).show();;
-            try {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("www.google.com"));
-                startActivity(browserIntent);
-            } catch (Exception ex){
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-                startActivity(browserIntent);
-            }
-        }
         if (position == POS_LOG) {
+            Toast.makeText(this, "Logging out", Toast.LENGTH_LONG).show();;
             mAuth.signOut();
             GetState();
         }

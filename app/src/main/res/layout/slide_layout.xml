@@ -7,16 +7,24 @@
     android:layout_height="match_parent"
     android:id="@+id/changeme">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center">
+
+        <ImageView
+            android:id="@+id/tvImg"
+            android:layout_width="match_parent"
+            android:minWidth="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/tvHeading"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:padding="30dp"
             android:textSize="20sp"
@@ -31,7 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvHeading"
-            android:layout_centerHorizontal="true"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:fontFamily="sans-serif"
@@ -42,6 +49,6 @@
             android:text="TextView"
             android:textColor="@android:color/white"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
