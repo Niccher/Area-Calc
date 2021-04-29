@@ -5,16 +5,18 @@ package com.niccher.areacalc.mod;
  */
 
 public class Mod_Area {
-    String gUid, gTime, gLatlng, gPoints;
+    String gUid, gTime, gLatlng, gPoints, gArea, gPerimeter;
 
     public Mod_Area() {
     }
 
-    public Mod_Area(String gUid, String gTime, String gLatlng, String gPoints) {
+    public Mod_Area(String gUid, String gTime, String gLatlng, String gPoints, String gArea, String gPerimeter) {
         this.gUid = gUid;
         this.gTime = gTime;
         this.gLatlng = gLatlng;
         this.gPoints = gPoints;
+        this.gArea = gArea;
+        this.gPerimeter = gPerimeter;
     }
 
     public String getgUid() {
@@ -47,5 +49,21 @@ public class Mod_Area {
 
     public void setgPoints(String gPoints) {
         this.gPoints = gPoints;
+    }
+
+    public String getgArea() {
+        return gArea;
+    }
+
+    public void setgArea(String gArea) {
+        this.gArea = gArea;
+    }
+
+    public String getgPerimeter() {
+        return gPerimeter;
+    }
+
+    public void setgPerimeter(String gPerimeter) {
+        this.gPerimeter = gPerimeter;
     }
 }

@@ -48,6 +48,7 @@ import com.niccher.areacalc.R;
 import com.niccher.areacalc.Utils.CalcArea;
 import com.niccher.areacalc.Utils.CalcDistance;
 import com.niccher.areacalc.mod.Mod_Area;
+import com.niccher.areacalc.mod.Mod_Perimeter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +93,8 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
     TextView txt_peri, txt_area;
 
     LinearLayout linL, linA, linC, linStatus;
+
+    String store_area, store_perimeter;
 
     CalcArea calcArea;
     CalcDistance calcDistance;
@@ -361,6 +364,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                     area_count = area_count + 1;
 
                     if (clean){
+                        store_area =""; store_perimeter ="";
                         loc_area.clear();
                         locList.clear();
                         gMaps.clear();
@@ -380,6 +384,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                             length_ = length_ + calcDistance.CalculateDistance(tapped, tapped1);
                             String distance  = String.format("%.2f", length_);
                             txt_peri.setText("Perimeter : "+distance+" Km");
+                            store_perimeter = distance;
                         }
 
                         if (loc_area.size() > 2){
@@ -396,6 +401,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                                 Log.e("AreaComputed", "SphericalUtil areas ++: "+String.format("%.0f", prev) );
 
                                 txt_area.setText("Areas as: \n"+String.format("%.2f", areas)+" Sq, Km");
+                                store_area = String.valueOf(areas);
 
                             }else {
                                 //Toast.makeText(getActivity(), "Markers should all be moving to one direction,\nEither clockwise or anticlockwise", Toast.LENGTH_LONG).show();
@@ -419,6 +425,7 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                         int sizes = locList.size();
 
                         if (state){
+                            store_area =""; store_perimeter ="";
                             locList.clear();
                             gMaps.clear();
                             googleMap.clear();
@@ -432,6 +439,8 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
                             String distance  = String.format("%.2f", length_);
                             txt_peri.setText("Distance Approximation: "+distance+" Km");
                             Log.e("Distance is ", "Currently as : " + length_);
+                            store_area ="NULLABLE";
+                            store_perimeter = distance;
                         }
 
                         markerOptions.position(latLng);
@@ -506,11 +515,19 @@ public class Frag_Home extends Fragment implements OnMapReadyCallback {
 
         try {
             uploadId= dref.push().getKey();
-            Mod_Area upload = new Mod_Area(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()));
-            dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
-            Toast.makeText(getActivity(), "Selection saved", Toast.LENGTH_SHORT).show();
+            if (area){
+                Mod_Area upload = new Mod_Area(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()),store_area, store_perimeter );
+                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
+                Toast.makeText(getActivity(), "Area Selection saved", Toast.LENGTH_SHORT).show();
+            }
+            if (length){
+                Mod_Perimeter upload = new Mod_Perimeter(uploadId,cdat+" "+ctim,llong,String.valueOf(selected.size()), store_perimeter );
+                dref.child(type).child(userf.getUid()).child(uploadId).setValue(upload);
+                Toast.makeText(getActivity(), "Length Selection saved", Toast.LENGTH_SHORT).show();
+            }
+
         }catch (Exception s){
-            Toast.makeText(getActivity(), "Unable to save your selection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Unable to save your selection", Toast.LENGTH_LONG).show();
             Log.e("SaveList", "SaveList Error : "+s.getMessage());
         }
     }

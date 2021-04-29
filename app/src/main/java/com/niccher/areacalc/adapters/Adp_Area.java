@@ -2,8 +2,6 @@ package com.niccher.areacalc.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.niccher.areacalc.R;
 import com.niccher.areacalc.mod.Mod_Area;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -51,6 +48,7 @@ public class Adp_Area extends RecyclerView.Adapter<Adp_Area.ViewHolder> {
         holder.poly_date.setText(mLinks.get(position).getgTime());
         holder.poly_objects.setText((mLinks.get(position).getgLatlng()).substring(0,50));
         holder.poly_points.setText(mLinks.get(position).getgPoints()+" Points");
+        holder.poly_vars.setText(mLinks.get(position).getgPerimeter()+" Kilometers\n" + mLinks.get(position).getgArea()+"  Square Kilometers");
     }
 
     @Override
@@ -60,13 +58,14 @@ public class Adp_Area extends RecyclerView.Adapter<Adp_Area.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView poly_date, poly_points, poly_objects;
+        TextView poly_date, poly_points, poly_objects, poly_vars;
 
         public ViewHolder(View itemView) {
             super(itemView);
             poly_date = itemView.findViewById(R.id.txt_dat);
             poly_points = itemView.findViewById(R.id.txt_title);
             poly_objects = itemView.findViewById(R.id.txt_body);
+            poly_vars = itemView.findViewById(R.id.txt_vars);
         }
     }
 

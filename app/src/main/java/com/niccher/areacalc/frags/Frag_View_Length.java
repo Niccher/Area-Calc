@@ -19,8 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.niccher.areacalc.R;
-import com.niccher.areacalc.adapters.Adp_Area;
-import com.niccher.areacalc.mod.Mod_Area;
+import com.niccher.areacalc.adapters.Adp_Perimeter;
+import com.niccher.areacalc.adapters.Adp_Perimeter;
+import com.niccher.areacalc.mod.Mod_Perimeter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ import java.util.List;
 public class Frag_View_Length extends Fragment {
 
     RecyclerView recyl;
-    Adp_Area adp;
-    List<Mod_Area> mod_list;
+    Adp_Perimeter adp;
+    List<Mod_Perimeter> mod_list;
 
     FirebaseAuth mAuth;
     FirebaseUser userf;
@@ -71,7 +72,7 @@ public class Frag_View_Length extends Fragment {
 
 
     private void FetchEm() {
-        DatabaseReference dref= FirebaseDatabase.getInstance().getReference("Area_Calc_Saved/Area").child(userf.getUid());
+        DatabaseReference dref= FirebaseDatabase.getInstance().getReference("Area_Calc_Saved/Length").child(userf.getUid());
         dref.keepSynced(true);
 
         dref.addValueEventListener(new ValueEventListener() {
@@ -80,11 +81,11 @@ public class Frag_View_Length extends Fragment {
                 mod_list.clear();
 
                 for (DataSnapshot ds1: dataSnapshot.getChildren()){
-                    Mod_Area ug=ds1.getValue(Mod_Area.class);
+                    Mod_Perimeter ug=ds1.getValue(Mod_Perimeter.class);
 
                     mod_list.add(ug);
 
-                    adp=new Adp_Area(getActivity(),mod_list);
+                    adp=new Adp_Perimeter(getActivity(),mod_list);
 
                     recyl.setAdapter(adp);
                 }
